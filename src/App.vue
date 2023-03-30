@@ -18,17 +18,22 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
+
+interface CompletionResponse {
+    choices: { text: string }[]
+}
 
 const question = ref('')
 const answer = ref('')
 
-async function handleAnswer() {
-    const url = 'https://api.openai.com/v1/engines/davinci-codex/completions'
-    const apiKey = '<YOUR_API_KEY_HERE>'
+async function handleAnswer(): Promise<void> {
+    const url: string =
+        'https://api.openai.com/v1/engines/davinci-codex/completions'
+    const apiKey: string = '<YOUR_API_KEY_HERE>'
 
     try {
-        const response = await axios.post(
+        const response: AxiosResponse<CompletionResponse> = await axios.post(
             url,
             {
                 prompt: question.value,
@@ -44,8 +49,8 @@ async function handleAnswer() {
             }
         )
 
-        const data = response.data
-        response.value = data.choices[0].text
+        const data: CompletionResponse = response.data
+        answer.value = data.choices[0].text
     } catch (error) {
         console.error(error)
     }
